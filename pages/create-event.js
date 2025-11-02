@@ -1,40 +1,32 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { Typography, Divider, Card, Row, Col } from 'antd';
 import LayoutApp from '../components/LayoutApp';
 import EventForm from '../components/EventForm';
 import EventCard from '../components/EventCard';
+import { useRouter } from 'next/router';
+import { useEvents } from '../context/EventContext';
 
 const { Title } = Typography;
 
 export default function CreateEvent() {
   const router = useRouter();
+  const { events, setEvents } = useEvents();
   const [preview, setPreview] = useState({});
-  const [stats, setStats] = useState({
-    total: 0,
-    upcoming: 0,
-    completed: 0,
-  });
 
-  useEffect(() => {
-    const events = JSON.parse(localStorage.getItem('events') || '[]');
-    const total = events.length;
-    const upcoming = events.filter((e) => e.status === 'Upcoming').length;
-    const completed = events.filter((e) => e.status === 'Completed').length;
-    setStats({ total, upcoming, completed });
-  }, []);
+  const stats = {
+    total: events.length,
+    upcoming: events.filter((e) => e.status === 'Upcoming').length,
+    completed: events.filter((e) => e.status === 'Completed').length,
+  };
 
   const handleSubmit = (values) => {
     const newEvent = {
       ...values,
-      date: values.date.format('YYYY-MM-DD'),
-      id: Date.now().toString(),
+      id: Date.now().toString(), // unique ID
     };
 
-    const existing = JSON.parse(localStorage.getItem('events') || '[]');
-    localStorage.setItem('events', JSON.stringify([...existing, newEvent]));
-
-    router.push('/events');
+    setEvents([...events, newEvent]); // update global state
+    router.push('/events'); // redirect after save
   };
 
   return (
@@ -63,8 +55,8 @@ export default function CreateEvent() {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24 }}>
         <div style={{ flex: 1, minWidth: 300 }}>
           <EventForm
-            onSubmit={handleSubmit}
             initialValues={{}}
+            onSubmit={handleSubmit}
             onValuesChange={(_, allValues) => setPreview(allValues)}
           />
         </div>

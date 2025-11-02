@@ -1,9 +1,12 @@
-import { Form, Input, Select, DatePicker, Radio, Button, Typography } from 'antd';
+import { Form, Input, Select, DatePicker, Radio, Button, Typography, Space } from 'antd';
 import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { Title } = Typography;
+
+const categoryOptions = ['Workshop', 'Seminar', 'Meetup'];
+const statusOptions = ['Upcoming', 'Completed'];
 
 export default function EventForm({ initialValues = {}, onSubmit }) {
   const [form] = Form.useForm();
@@ -16,6 +19,10 @@ export default function EventForm({ initialValues = {}, onSubmit }) {
     onSubmit(formatted);
   };
 
+  const handleReset = () => {
+    form.resetFields();
+  };
+
   return (
     <>
       <Title level={4}>Event Form</Title>
@@ -25,6 +32,8 @@ export default function EventForm({ initialValues = {}, onSubmit }) {
         initialValues={{
           ...initialValues,
           date: initialValues.date ? dayjs(initialValues.date) : null,
+          category: initialValues.category || categoryOptions[0],
+          status: initialValues.status || statusOptions[0],
         }}
         onFinish={handleFinish}
       >
@@ -36,33 +45,55 @@ export default function EventForm({ initialValues = {}, onSubmit }) {
           <Input placeholder="Enter event name" />
         </Form.Item>
 
-        <Form.Item label="Category" name="category">
+        <Form.Item
+          label="Category"
+          name="category"
+          rules={[{ required: true, message: 'Please select a category' }]}
+        >
           <Select placeholder="Select category">
-            <Option value="Workshop">Workshop</Option>
-            <Option value="Seminar">Seminar</Option>
-            <Option value="Meetup">Meetup</Option>
+            {categoryOptions.map((cat) => (
+              <Option key={cat} value={cat}>{cat}</Option>
+            ))}
           </Select>
         </Form.Item>
 
-        <Form.Item label="Date" name="date">
+        <Form.Item
+          label="Date"
+          name="date"
+          rules={[{ required: true, message: 'Please select a date' }]}
+        >
           <DatePicker style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item label="Description" name="description">
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[{ required: true, message: 'Please enter a description' }]}
+        >
           <TextArea rows={4} placeholder="Event description" />
         </Form.Item>
 
-        <Form.Item label="Status" name="status">
+        <Form.Item
+          label="Status"
+          name="status"
+          rules={[{ required: true, message: 'Please select a status' }]}
+        >
           <Radio.Group>
-            <Radio value="Upcoming">Upcoming</Radio>
-            <Radio value="Completed">Completed</Radio>
+            {statusOptions.map((status) => (
+              <Radio key={status} value={status}>{status}</Radio>
+            ))}
           </Radio.Group>
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Save Event
-          </Button>
+          <Space>
+            <Button type="primary" htmlType="submit">
+              Save Event
+            </Button>
+            <Button htmlType="button" onClick={handleReset}>
+              Clear
+            </Button>
+          </Space>
         </Form.Item>
       </Form>
     </>

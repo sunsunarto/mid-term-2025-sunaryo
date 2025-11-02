@@ -3,24 +3,26 @@ import { useEffect, useState } from 'react';
 import LayoutApp from '../../components/LayoutApp';
 import { Typography, Divider, Button, message } from 'antd';
 import EventCard from '../../components/EventCard';
+import { useEvents } from '../../context/EventContext';
 
 const { Title } = Typography;
 
 export default function ViewEvent() {
   const router = useRouter();
   const { id } = router.query;
+  const { events, setEvents } = useEvents();
   const [event, setEvent] = useState(null);
 
   useEffect(() => {
-    const events = JSON.parse(localStorage.getItem('events') || '[]');
-    const found = events.find((e) => e.id === id);
-    setEvent(found);
-  }, [id]);
+    if (id) {
+      const found = events.find((e) => e.id === id);
+      setEvent(found);
+    }
+  }, [id, events]);
 
   const handleDelete = () => {
-    const events = JSON.parse(localStorage.getItem('events') || '[]');
     const updated = events.filter((e) => e.id !== id);
-    localStorage.setItem('events', JSON.stringify(updated));
+    setEvents(updated);
     message.success('Event deleted');
     router.push('/events');
   };

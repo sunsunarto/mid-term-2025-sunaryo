@@ -29,6 +29,13 @@ export default function LayoutApp({ children }) {
   const isMobile = !screens.md;
   const [drawerVisible, setDrawerVisible] = useState(false);
 
+  const getPageTitle = () => {
+    if (path === '/') return 'Dashboard';
+    if (path.startsWith('/events')) return 'Events';
+    if (path === '/create-event') return 'Create Event';
+    return 'Event Manager';
+  };
+
   const menuItems = (
     <Menu
       mode="vertical"
@@ -63,10 +70,10 @@ export default function LayoutApp({ children }) {
           }}
         >
           <Avatar size={80} style={{ backgroundColor: '#1890ff' }}>
-            E
+            {getPageTitle().charAt(0)}
           </Avatar>
           <Title level={5} style={{ marginTop: 12, textAlign: 'center' }}>
-            Event Manager
+            {getPageTitle()}
           </Title>
           <Text type="secondary" style={{ textAlign: 'center' }}>
             Manage your events
@@ -92,7 +99,7 @@ export default function LayoutApp({ children }) {
             onClick={() => setDrawerVisible(true)}
           />
           <Drawer
-            title="Event Manager"
+            title={getPageTitle()}
             placement="left"
             onClose={() => setDrawerVisible(false)}
             visible={drawerVisible}

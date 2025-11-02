@@ -3,26 +3,28 @@ import { useEffect, useState } from 'react';
 import LayoutApp from '../../../components/LayoutApp';
 import EventForm from '../../../components/EventForm';
 import { Typography, Divider, message } from 'antd';
+import { useEvents } from '../../../context/EventContext';
 
 const { Title } = Typography;
 
 export default function EditEvent() {
   const router = useRouter();
   const { id } = router.query;
+  const { events, setEvents } = useEvents();
   const [event, setEvent] = useState(null);
 
   useEffect(() => {
-    const events = JSON.parse(localStorage.getItem('events') || '[]');
-    const found = events.find((e) => e.id === id);
-    setEvent(found);
-  }, [id]);
+    if (id) {
+      const found = events.find((e) => e.id === id);
+      setEvent(found);
+    }
+  }, [id, events]);
 
   const handleUpdate = (updatedEvent) => {
-    const events = JSON.parse(localStorage.getItem('events') || '[]');
     const newList = events.map((e) => (e.id === id ? { ...updatedEvent, id } : e));
-    localStorage.setItem('events', JSON.stringify(newList));
+    setEvents(newList);
     message.success('Event updated');
-    router.push(`/events`);
+    router.push('/events');
   };
 
   if (!event) {

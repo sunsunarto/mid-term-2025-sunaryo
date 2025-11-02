@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "name": "React Workshop",
+    "category": "Tech",
+    "date": "2025-11-10",
+    "status": "Upcoming"
+  },
+  {
+    "id": "2",
+    "name": "Design Sprint",
+    "category": "Creative",
+    "date": "2025-10-20",
+    "status": "Completed"
+  }
+]

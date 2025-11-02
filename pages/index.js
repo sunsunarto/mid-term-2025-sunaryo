@@ -5,7 +5,13 @@ import Link from 'next/link';
 
 const { Title, Text } = Typography;
 
+const initialEvents = [
+  { id: '1', title: 'Event One', status: 'Upcoming' },
+  { id: '2', title: 'Event Two', status: 'Completed' },
+];
+
 export default function Dashboard() {
+  const [events, setEvents] = useState(initialEvents);
   const [stats, setStats] = useState({
     total: 0,
     upcoming: 0,
@@ -13,12 +19,11 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    const events = JSON.parse(localStorage.getItem('events') || '[]');
     const total = events.length;
     const upcoming = events.filter((e) => e.status === 'Upcoming').length;
     const completed = events.filter((e) => e.status === 'Completed').length;
     setStats({ total, upcoming, completed });
-  }, []);
+  }, [events]);
 
   return (
     <LayoutApp>
